@@ -1,0 +1,4 @@
+src/Test.It.With.XUnit/bin/
+src/Test.It.With.XUnit/obj/
+packages/
+!tools/**
