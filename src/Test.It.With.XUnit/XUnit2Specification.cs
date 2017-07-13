@@ -10,7 +10,7 @@ namespace Test.It.With.XUnit
     {
         protected readonly ITestOutputHelper TestOutputHelper;
 
-        protected XUnit2Specification() 
+        protected XUnit2Specification()
             : this(new NoTestOutputHelper())
         {
         }
@@ -18,20 +18,28 @@ namespace Test.It.With.XUnit
         protected XUnit2Specification(ITestOutputHelper testOutputHelper)
         {
             TestOutputHelper = testOutputHelper;
+            SetupOutput();
 
-            var outputWriter = new TestOutputHelperTextWriter(testOutputHelper);
-            Console.SetOut(outputWriter);
+            Setup();
+        }
+
+        private void SetupOutput()
+        {
             if (Trace.Listeners.OfType<ConsoleTraceListener>().Any() == false)
             {
                 Trace.Listeners.Add(new ConsoleTraceListener());
             }
 
-            Setup();
+            if (TestOutputHelper.GetType() != typeof(NoTestOutputHelper))
+            {
+                var outputWriter = new TestOutputHelperTextWriter(TestOutputHelper);
+                Console.SetOut(outputWriter);
+            }
         }
 
         protected event EventHandler OnDisposing;
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             OnDisposing?.Invoke(this, null);
         }
