@@ -17,12 +17,6 @@ namespace Test.It.With.XUnit.Tests
         }
 
         [Fact]
-        public void It_should_not_throw_any_exceptions()
-        {
-            
-        }
-
-        [Fact]
         public void It_should_have_added_a_console_trace_listener()
         {
             Trace.Listeners.OfType<ConsoleTraceListener>().Should().Count.AtLeast(1);
