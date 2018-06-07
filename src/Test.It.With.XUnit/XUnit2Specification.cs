@@ -38,7 +38,11 @@ namespace Test.It.With.XUnit
                 _standardOutput = Console.Out;
                 Console.SetOut(outputWriter);
             }
+
+            OnSetupOutputDone();
         }
+
+        protected virtual void OnSetupOutputDone() { }
 
         protected event EventHandler OnDisposing;
 
