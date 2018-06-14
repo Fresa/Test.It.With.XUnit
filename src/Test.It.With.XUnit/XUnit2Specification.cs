@@ -13,12 +13,15 @@ namespace Test.It.With.XUnit
         {
         }
 
-        protected XUnit2Specification(ITestOutputHelper testOutputHelper)
+        protected XUnit2Specification(ITestOutputHelper testOutputHelper, bool startTestSetup = true)
         {
             TestOutputHelper = testOutputHelper;
             SetupOutput();
 
-            Setup();
+            if (startTestSetup)
+            {
+                Setup();
+            }
         }
 
         private void SetupOutput()
