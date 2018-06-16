@@ -14,7 +14,7 @@
         <IncludeSymbols>True</IncludeSymbols>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Test.It" Version="2.0.3" />
+        <PackageReference Include="Test.It" Version="2.0.4" />
         <PackageReference Include="xunit.abstractions" Version="2.0.1" />
     </ItemGroup>
 </Project>  

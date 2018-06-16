@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Test.It.Specifications;
 using Xunit.Abstractions;
 
@@ -7,6 +8,7 @@ namespace Test.It.With.XUnit
     public abstract class XUnit2Specification : Specification, IDisposable
     {
         private readonly DisposeList _disposeList = new DisposeList();
+        private readonly ITestOutputHelper _testOutputHelper;
 
         protected XUnit2Specification()
             : this(new NoTestOutputHelper())
@@ -15,8 +17,13 @@ namespace Test.It.With.XUnit
 
         protected XUnit2Specification(ITestOutputHelper testOutputHelper, bool startTestSetup = true)
         {
-            TestOutputHelper = testOutputHelper;
-            SetupOutput();
+            _testOutputHelper = testOutputHelper;
+
+            if (_testOutputHelper.GetType() != typeof(NoTestOutputHelper))
+            {
+                SetupOutput();
+                SetupInput();
+            }
 
             if (startTestSetup)
             {
@@ -26,14 +33,17 @@ namespace Test.It.With.XUnit
 
         private void SetupOutput()
         {
-            if (TestOutputHelper.GetType() != typeof(NoTestOutputHelper))
-            {
-                _disposeList.Add(Output.WriteTo(TestOutputHelper));
-            }
+            _disposeList.Add(XUnit.Output.WriteTo(_testOutputHelper));
         }
 
-        protected readonly ITestOutputHelper TestOutputHelper;
+        private void SetupInput()
+        {
+            _disposeList.Add(XUnit.Input.WriteTo(_testOutputHelper));
+        }
 
+        protected readonly TextWriter TestInputHelper = XUnit.Input.Writer;
+        protected readonly TextWriter TestOutputHelper = XUnit.Output.Writer;
+        
         protected virtual void Dispose(bool disposing)
         {
             _disposeList.Dispose();
