@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace Test.It.With.XUnit
 {
-    internal class DisposeList : List<IDisposable>, IDisposable
+    internal class DisposableList : List<IDisposable>, IDisposable
     {
-        public static DisposeList FromRange(params IDisposable[] disposables)
+        public static DisposableList FromRange(params IDisposable[] disposables)
         {
-            var list = new DisposeList();
+            var list = new DisposableList();
 
             if (disposables.Any())
             {

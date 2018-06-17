@@ -35,7 +35,7 @@ namespace Given_an_xunit_output_helper
         protected override void Given()
         {
             _inputWriter = new InputWriter();
-            _inputWriter.OnOutput += TestInputHelper.Write;
+            _inputWriter.OnOutput += TestOutputHelper.Write;
         }
 
         protected override void When()

@@ -13,7 +13,7 @@ namespace Test.It.With.XUnit
             var testOutputHelperTextWriter = new TestOutputHelperTextWriter(testOutputHelper);
             var unregistrer = It.Output.WriteTo(testOutputHelperTextWriter);
 
-            return DisposeList.FromRange(unregistrer, testOutputHelperTextWriter);
+            return DisposableList.FromRange(unregistrer, testOutputHelperTextWriter);
         }
     }
 }
