@@ -4,7 +4,7 @@ using Xunit.Abstractions;
 
 namespace Test.It.With.XUnit
 {
-    internal static class Output
+    public static class Output
     {
         public static TextWriter Writer => It.Output.Writer;
 
