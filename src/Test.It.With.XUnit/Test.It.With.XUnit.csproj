@@ -14,9 +14,15 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Test.It" Version="2.1.1" />
+    <PackageReference Include="Test.It" Version="2.1.3" />
     <PackageReference Include="xunit.abstractions" Version="2.0.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63102-01" PrivateAssets="All" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.2.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="xunit.core">
+      <HintPath>..\..\packages\xunit.extensibility.core.2.2.0\lib\netstandard1.1\xunit.core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition="'$(NCrunch)' == '1'">
     <EnableSourceControlManagerQueries>false</EnableSourceControlManagerQueries>
