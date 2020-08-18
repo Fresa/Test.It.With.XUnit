@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Test.It" Version="3.0.0" />
     <PackageReference Include="xunit.abstractions" Version="2.0.1" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta-63102-01" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="xunit.extensibility.core" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
