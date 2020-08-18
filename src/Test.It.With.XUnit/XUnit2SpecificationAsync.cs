@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Test.It.Specifications;
 using Xunit;
@@ -27,6 +28,11 @@ namespace Test.It.With.XUnit
             }
         }
 
+        protected virtual CancellationTokenSource CancellationTokenSource
+        {
+            get;
+        } = new CancellationTokenSource();
+
         private void SetupOutput()
         {
             _disposableList.Add(Output.WriteTo(_testOutputHelper));
@@ -36,13 +42,14 @@ namespace Test.It.With.XUnit
 
         protected virtual Task DisposeAsync(bool disposing)
         {
+            CancellationTokenSource.Dispose();
             _disposableList.Dispose();
             return Task.CompletedTask;
         }
 
         public async Task InitializeAsync()
         {
-            await SetupAsync();
+            await SetupAsync(CancellationTokenSource.Token);
         }
 
         public async Task DisposeAsync()

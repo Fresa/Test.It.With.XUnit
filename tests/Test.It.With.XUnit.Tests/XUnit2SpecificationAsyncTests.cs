@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FakeItEasy;
-using Should.Core.Exceptions;
+using FluentAssertions;
 using Test.It.With.XUnit;
 using Test.It.With.XUnit.Tests;
 using Xunit;
@@ -19,15 +19,21 @@ namespace Given_an_xunit_output_helper
         {
         }
 
-        protected override async Task WhenAsync()
+        protected override async Task WhenAsync(CancellationToken cancellationToken)
         {
-            await Task.Run(() => Trace.WriteLine("Testing"));
+            await Task.Run(() =>
+            {
+                using (Test.It.Output.WriteToTrace())
+                {
+                    Trace.WriteLine("Testing");
+                }
+            }, cancellationToken);
         }
 
         [Fact]
         public void It_should_have_written_to_output()
         {
-            A.CallTo(() => OutputHelper.WriteLine("Testing")).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => OutputHelper.WriteLine("Testing")).MustHaveHappened(1, Times.Exactly);
         }
     }
 
@@ -39,7 +45,7 @@ namespace Given_an_xunit_output_helper
         {
         }
 
-        protected override async Task GivenAsync()
+        protected override async Task GivenAsync(CancellationToken cancellationToken)
         {
             await Task.Run(() =>
             {
@@ -48,7 +54,7 @@ namespace Given_an_xunit_output_helper
             });
         }
 
-        protected override async Task WhenAsync()
+        protected override async Task WhenAsync(CancellationToken cancellationToken)
         {
             await Task.Run(() => _inputWriter.WriteLine("Testing"));
         }
@@ -56,7 +62,7 @@ namespace Given_an_xunit_output_helper
         [Fact]
         public void It_should_have_written_to_output()
         {
-            A.CallTo(() => OutputHelper.WriteLine("Testing")).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => OutputHelper.WriteLine("Testing")).MustHaveHappened(1, Times.Exactly);
         }
     }
 
@@ -66,7 +72,7 @@ namespace Given_an_xunit_output_helper
         {
         }
 
-        protected override async Task WhenAsync()
+        protected override async Task WhenAsync(CancellationToken cancellationToken)
         {
             await Task.Run(() => TestOutputHelper.WriteLine("Testing"));
         }
@@ -74,7 +80,7 @@ namespace Given_an_xunit_output_helper
         [Fact]
         public void It_should_have_written_to_output()
         {
-            A.CallTo(() => OutputHelper.WriteLine("Testing")).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => OutputHelper.WriteLine("Testing")).MustHaveHappened(1, Times.Exactly);
         }
     }
 
@@ -83,48 +89,28 @@ namespace Given_an_xunit_output_helper
         private readonly ConcurrentBag<Test> _tests = new ConcurrentBag<Test>();
         private const int NumberOfTests = 1000;
 
-        protected override async Task WhenAsync()
+        protected override async Task WhenAsync(CancellationToken cancellationToken)
         {
             await Task.WhenAll(Enumerable.Range(0, NumberOfTests).Select(async i =>
             {
                 await Task.Run(() =>
                 {
-                    using (var test = new Test(i, new ListeningTestOutputHelper()))
-                    {
-                        test.WriteLine("running");
-                        _tests.Add(test);
-                    }
-                });
+                    using var test = new Test(i, new ListeningTestOutputHelper());
+                    test.WriteLine("running");
+                    _tests.Add(test);
+                }, cancellationToken);
             }));
-        }
-
-        [Fact]
-        public void It_should_have_written_messages()
-        {
-            var exceptions = new List<AssertException>();
-            foreach (var test in _tests.Where(test => test.ListeningTestOutputHelper.MessagesWritten.Count != 1))
-            {
-                exceptions.Add(new AssertException($"{test.TestNumber} has {test.ListeningTestOutputHelper.MessagesWritten.Count} messages received. Expected 1."));
-            }
-
-            if (exceptions.Any())
-            {
-                throw new AggregateException(exceptions);
-            }
         }
 
         [Fact]
         public void It_should_have_written_a_message_to_each_output_helper()
         {
-            var exceptions = new List<AssertException>();
             foreach (var test in _tests.Where(test => test.ListeningTestOutputHelper.MessagesWritten.Count != 1))
             {
-                exceptions.Add(new AssertException($"{test.TestNumber} has received {(test.ListeningTestOutputHelper.MessagesWritten.Count == 0 ? "''" : string.Join(", ", test.ListeningTestOutputHelper.MessagesWritten.Select(s => $"'{s}'")))}. Expected 'running'."));
-            }
-
-            if (exceptions.Any())
-            {
-                throw new AggregateException(exceptions);
+                test.ListeningTestOutputHelper.MessagesWritten.Should()
+                    .HaveCount(
+                        1,
+                        $"{test.TestNumber} has received {(test.ListeningTestOutputHelper.MessagesWritten.Count == 0 ? "''" : string.Join(", ", test.ListeningTestOutputHelper.MessagesWritten.Select(s => $"'{s}'")))}. Expected 'running'.");
             }
         }
 

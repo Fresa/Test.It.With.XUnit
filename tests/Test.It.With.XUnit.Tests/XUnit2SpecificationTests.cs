@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
-using Should.Core.Exceptions;
+using FluentAssertions;
 using Test.It.Specifications;
 using Test.It.With.XUnit;
 using Test.It.With.XUnit.Tests;
@@ -18,17 +18,22 @@ namespace Given_an_xunit_output_helper
     {
         public When_writing_to_trace() : base(A.Fake<ITestOutputHelper>())
         {
+            
         }
 
         protected override void When()
         {
-            Trace.WriteLine("Testing");
+            using (Test.It.Output.WriteToTrace())
+            {
+                Trace.WriteLine("Testing");
+            }
         }
 
         [Fact]
         public void It_should_have_written_to_output()
         {
-            A.CallTo(() => OutputHelper.WriteLine("Testing")).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => OutputHelper.WriteLine("Testing"))
+                .MustHaveHappened(1, Times.Exactly);
         }
     }
 
@@ -54,7 +59,7 @@ namespace Given_an_xunit_output_helper
         [Fact]
         public void It_should_have_written_to_output()
         {
-            A.CallTo(() => OutputHelper.WriteLine("Testing")).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => OutputHelper.WriteLine("Testing")).MustHaveHappened(1, Times.Exactly);
         }
     }
 
@@ -72,7 +77,8 @@ namespace Given_an_xunit_output_helper
         [Fact]
         public void It_should_have_written_to_output()
         {
-            A.CallTo(() => OutputHelper.WriteLine("Testing")).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => OutputHelper.WriteLine("Testing"))
+                .MustHaveHappened(1, Times.Exactly);
         }
     }
 
@@ -99,32 +105,14 @@ namespace Given_an_xunit_output_helper
         }
 
         [Fact]
-        public void It_should_have_written_messages()
-        {
-            var exceptions = new List<AssertException>();
-            foreach (var test in _tests.Where(test => test.ListeningTestOutputHelper.MessagesWritten.Count != 1))
-            {
-                exceptions.Add(new AssertException($"{test.TestNumber} has {test.ListeningTestOutputHelper.MessagesWritten.Count} messages received. Expected 1."));
-            }
-
-            if (exceptions.Any())
-            {
-                throw new AggregateException(exceptions);
-            }
-        }
-
-        [Fact]
         public void It_should_have_written_a_message_to_each_output_helper()
         {
-            var exceptions = new List<AssertException>();
             foreach (var test in _tests.Where(test => test.ListeningTestOutputHelper.MessagesWritten.Count != 1))
             {
-                exceptions.Add(new AssertException($"{test.TestNumber} has received {(test.ListeningTestOutputHelper.MessagesWritten.Count == 0 ? "''" : string.Join(", ", test.ListeningTestOutputHelper.MessagesWritten.Select(s => $"'{s}'")))}. Expected 'running'."));
-            }
-
-            if (exceptions.Any())
-            {
-                throw new AggregateException(exceptions);
+                test.ListeningTestOutputHelper.MessagesWritten.Should()
+                    .HaveCount(
+                        1,
+                        $"{test.TestNumber} has received {(test.ListeningTestOutputHelper.MessagesWritten.Count == 0 ? "''" : string.Join(", ", test.ListeningTestOutputHelper.MessagesWritten.Select(s => $"'{s}'")))}. Expected 'running'.");
             }
         }
 
