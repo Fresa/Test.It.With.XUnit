@@ -19,9 +19,9 @@ namespace Given_an_xunit_output_helper
         {
         }
 
-        protected override async Task WhenAsync(CancellationToken cancellationToken)
+        protected override Task WhenAsync(CancellationToken cancellationToken)
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 using (Test.It.Output.WriteToTrace())
                 {
@@ -45,18 +45,18 @@ namespace Given_an_xunit_output_helper
         {
         }
 
-        protected override async Task GivenAsync(CancellationToken cancellationToken)
+        protected override Task GivenAsync(CancellationToken cancellationToken)
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 _inputWriter = new InputWriter();
                 _inputWriter.OnOutput += TestOutputHelper.Write;
-            });
+            }, cancellationToken);
         }
 
-        protected override async Task WhenAsync(CancellationToken cancellationToken)
+        protected override Task WhenAsync(CancellationToken cancellationToken)
         {
-            await Task.Run(() => _inputWriter.WriteLine("Testing"));
+            return Task.Run(() => _inputWriter.WriteLine("Testing"), cancellationToken);
         }
 
         [Fact]
@@ -72,9 +72,9 @@ namespace Given_an_xunit_output_helper
         {
         }
 
-        protected override async Task WhenAsync(CancellationToken cancellationToken)
+        protected override Task WhenAsync(CancellationToken cancellationToken)
         {
-            await Task.Run(() => TestOutputHelper.WriteLine("Testing"));
+            return Task.Run(() => TestOutputHelper.WriteLine("Testing"), cancellationToken);
         }
 
         [Fact]
@@ -98,8 +98,8 @@ namespace Given_an_xunit_output_helper
                     using var test = new Test(i, new ListeningTestOutputHelper());
                     test.WriteLine("running");
                     _tests.Add(test);
-                }, cancellationToken);
-            }));
+                }, cancellationToken).ConfigureAwait(false);
+            })).ConfigureAwait(false);
         }
 
         [Fact]

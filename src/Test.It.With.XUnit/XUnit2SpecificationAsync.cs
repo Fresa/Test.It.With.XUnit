@@ -8,7 +8,8 @@ using Xunit.Abstractions;
 
 namespace Test.It.With.XUnit
 {
-    public abstract class XUnit2SpecificationAsync : SpecificationAsync, IAsyncLifetime
+    public abstract class XUnit2SpecificationAsync : SpecificationAsync,
+        IAsyncLifetime
     {
         private readonly DisposableList _disposableList = new DisposableList();
         private readonly ITestOutputHelper _testOutputHelper;
@@ -18,7 +19,8 @@ namespace Test.It.With.XUnit
         {
         }
 
-        protected XUnit2SpecificationAsync(ITestOutputHelper testOutputHelper)
+        protected XUnit2SpecificationAsync(
+            ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
 
@@ -40,21 +42,21 @@ namespace Test.It.With.XUnit
 
         protected readonly TextWriter TestOutputHelper = Output.Writer;
 
-        protected virtual Task DisposeAsync(bool disposing)
+        protected virtual Task DisposeAsync(
+            bool disposing)
         {
             CancellationTokenSource.Dispose();
             _disposableList.Dispose();
             return Task.CompletedTask;
         }
 
-        public async Task InitializeAsync()
-        {
-            await SetupAsync(CancellationTokenSource.Token);
-        }
+        public Task InitializeAsync()
+            => SetupAsync(CancellationTokenSource.Token);
 
         public async Task DisposeAsync()
         {
-            await DisposeAsync(true);
+            await DisposeAsync(true)
+                .ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
     }
