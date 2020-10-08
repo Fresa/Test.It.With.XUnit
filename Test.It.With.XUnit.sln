@@ -1,13 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.XUnit", "src\Test.It.With.XUnit\Test.It.With.XUnit.csproj", "{A6ED849B-4934-4DC2-85D4-E34E7D68F404}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.It.With.XUnit", "src\Test.It.With.XUnit\Test.It.With.XUnit.csproj", "{A6ED849B-4934-4DC2-85D4-E34E7D68F404}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{90F3668F-464F-4440-986A-B6A9BAD99DD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.It.With.XUnit.Tests", "tests\Test.It.With.XUnit.Tests\Test.It.With.XUnit.Tests.csproj", "{536F85DD-B4A8-4898-BE22-8F2790346D34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.It.With.XUnit.Tests", "tests\Test.It.With.XUnit.Tests\Test.It.With.XUnit.Tests.csproj", "{536F85DD-B4A8-4898-BE22-8F2790346D34}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{236D27DB-C77C-4961-BF26-52AF432BDDF1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{FBE24DD4-A39C-4000-8E8A-9FB2A4D200F8}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\cd.yml = .github\workflows\cd.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{10D53206-42E1-49A8-B9AE-29F7BA20D7A2}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,5 +41,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{536F85DD-B4A8-4898-BE22-8F2790346D34} = {90F3668F-464F-4440-986A-B6A9BAD99DD9}
+		{FBE24DD4-A39C-4000-8E8A-9FB2A4D200F8} = {236D27DB-C77C-4961-BF26-52AF432BDDF1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3793A469-27AE-4A97-9D3A-0BF8192BA690}
 	EndGlobalSection
 EndGlobal
