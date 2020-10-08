@@ -59,5 +59,12 @@ namespace Test.It.With.XUnit
                 .ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
+
+        ~XUnit2SpecificationAsync()
+        {
+            DisposeAsync(false)
+                .GetAwaiter()
+                .GetResult();
+        }
     }
 }

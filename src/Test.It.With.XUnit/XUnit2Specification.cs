@@ -47,5 +47,10 @@ namespace Test.It.With.XUnit
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        ~XUnit2Specification()
+        {
+            Dispose(false);
+        }
     }
 }
