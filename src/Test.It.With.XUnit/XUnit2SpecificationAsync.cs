@@ -45,6 +45,11 @@ namespace Test.It.With.XUnit
         protected virtual Task DisposeAsync(
             bool disposing)
         {
+            if (!disposing)
+            {
+                return Task.CompletedTask;
+            }
+
             CancellationTokenSource.Dispose();
             _disposableList.Dispose();
             return Task.CompletedTask;
@@ -53,11 +58,10 @@ namespace Test.It.With.XUnit
         public Task InitializeAsync()
             => SetupAsync(CancellationTokenSource.Token);
 
-        public async Task DisposeAsync()
+        public Task DisposeAsync()
         {
-            await DisposeAsync(true)
-                .ConfigureAwait(false);
             GC.SuppressFinalize(this);
+            return DisposeAsync(true);
         }
 
         ~XUnit2SpecificationAsync()
